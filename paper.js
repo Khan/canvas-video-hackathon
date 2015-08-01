@@ -1,8 +1,8 @@
-var drawingData = window.drawingData1;
+var drawingData = window.drawingData2;
 
 var path = new Path({
   strokeColor: 'rgb(213, 129, 174)',
-  strokeWidth: '5',
+  strokeWidth: '3',
   strokeCap: 'round',
 });
 
@@ -12,6 +12,7 @@ var firstPointTime = drawingData[0][2];
 ///////////////////////////////////////////////////////////////////////////////
 // Main animation loop
 
+// TODO(david): Get variable-width inking working for playback.
 function onFrame(event) {
   var currentTime = event.time;
   var timeOffset = currentTime + firstPointTime;
@@ -20,12 +21,26 @@ function onFrame(event) {
        drawingData[pointIndex][2] < timeOffset; pointIndex++) {
     var datum = drawingData[pointIndex];
     var x = datum[0];
-    var y = datum[1] - 400;
-    path.add(new Point(x, y));
+    var y = datum[1];
+
+    // Detect for pen lift (start new path if so)
+    if (x === 0 && y === 0) {
+      path = new Path({
+        strokeColor: {
+          hue: Math.random() * 360,
+          saturation: 0.6,
+          brightness: 0.6
+        },
+        strokeWidth: '3',
+        strokeCap: 'round',
+      });
+    } else {
+      path.add(new Point(x, y - 200));
+    }
   }
 
-  path.strokeColor.hue += 1;
   path.smooth();
+  path.strokeColor.hue += 0.5;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,7 +54,7 @@ function onMouseDown(event) {
   brushPath = new Path({
     fillColor: {
       hue: Math.random() * 360,
-      saturation: 0.8,
+      saturation: 0.7,
       brightness: 0.7
     }
   });
