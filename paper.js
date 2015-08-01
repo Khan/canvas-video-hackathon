@@ -95,6 +95,7 @@ $('#play-btn').on('click', function() {
   view.play();
 });
 
+// TODO(david): Get pausing to actually work.
 $('#pause-btn').on('click', function() {
   view.pause();
 });
