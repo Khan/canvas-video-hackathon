@@ -65,11 +65,10 @@ function onFrame(event) {
       });
       dataPaths.push(path);
     } else {
-      path.add(new Point(x, y - 200));
+      path.add(new Point(x, y));
+      path.smooth();
     }
   }
-
-  path.smooth();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
