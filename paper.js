@@ -99,3 +99,17 @@ $('#play-btn').on('click', function() {
 $('#pause-btn').on('click', function() {
   Timer.pause();
 });
+
+$("#video-canvas").on("mousewheel", function(event) {
+  // Detect if user is pinch-to-zoom-ing on trackpad
+  if (event.ctrlKey) {
+    view.zoom *= 1 + (event.deltaY * 0.003);
+    view.zoom = Math.max(0.1, view.zoom);
+    console.log(event.deltaX, event.deltaY, event.deltaFactor);
+  } else {
+    view.scrollBy(new Point(event.deltaX, -event.deltaY) * 0.5);
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+});
