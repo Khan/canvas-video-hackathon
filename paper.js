@@ -8,13 +8,14 @@ var path = new Path({
 
 var pointIndex = 0;
 var firstPointTime = drawingData[0][2];
+Timer.start();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Main animation loop
 
 // TODO(david): Get variable-width inking working for playback.
 function onFrame(event) {
-  var currentTime = event.time;
+  var currentTime = Timer.getMs() / 1000;
   var timeOffset = currentTime + firstPointTime;
 
   for (; drawingData[pointIndex] &&
@@ -92,10 +93,9 @@ $('#zoom-out-btn').on('click', function() {
 });
 
 $('#play-btn').on('click', function() {
-  view.play();
+  Timer.resume();
 });
 
-// TODO(david): Get pausing to actually work.
 $('#pause-btn').on('click', function() {
-  view.pause();
+  Timer.pause();
 });
