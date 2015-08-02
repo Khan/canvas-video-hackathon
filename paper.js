@@ -29,8 +29,8 @@ function onFrame(event) {
       path = new Path({
         strokeColor: {
           hue: Math.random() * 360,
-          saturation: 0.6,
-          brightness: 0.6
+          saturation: 0.7,
+          brightness: 0.8
         },
         strokeWidth: '3',
         strokeCap: 'round',
