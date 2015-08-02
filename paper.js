@@ -37,6 +37,12 @@ function resetDrawing() {
 initFromData(window.drawingData2);
 Timer.start();
 
+$.get("http://toyserver.rileyjshaw.com:8008", function(data) {
+  initFromData(data);
+  Timer.reset();
+  resetDrawing();
+});
+
 ///////////////////////////////////////////////////////////////////////////////
 // Main animation loop
 
