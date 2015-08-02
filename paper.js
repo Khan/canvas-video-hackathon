@@ -1,4 +1,15 @@
-var drawingData = window.drawingData2;
+var drawingData;
+var firstPointTime;
+var lastPointTime;
+var totalTime;
+var isPlaying = true;
+
+function initFromData(data) {
+  drawingData = data;
+  firstPointTime = data[0][2];
+  lastPointTime = data[data.length - 1][2];
+  totalTime = lastPointTime - firstPointTime;
+}
 
 var path = new Path({
   strokeColor: 'rgb(213, 129, 174)',
@@ -8,10 +19,6 @@ var path = new Path({
 
 var dataPaths = [path];
 var pointIndex = 0;
-var firstPointTime = drawingData[0][2];
-var lastPointTime = drawingData[drawingData.length - 1][2];
-var totalTime = lastPointTime - firstPointTime;
-Timer.start();
 
 function resetDrawing() {
   pointIndex = 0;
@@ -23,6 +30,12 @@ function resetDrawing() {
 
   removeBrushes();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Initializations
+
+initFromData(window.drawingData2);
+Timer.start();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Main animation loop
@@ -153,6 +166,19 @@ $('#pause-btn').on('click', function() {
   Timer.pause();
 });
 
+$('#play-pause-btn').on('click', function() {
+  if (isPlaying) {  // pause
+    Timer.pause();
+    isPlaying = false;
+    $('#play-pause-btn').html("&#9654; PLAY");
+  } else {  // play
+    Timer.resume();
+    removeBrushes();
+    isPlaying = true;
+    $('#play-pause-btn').html("&#9616;&#9616; PAUSE");
+  }
+});
+
 $("#video-canvas").on("mousewheel", function(event) {
   // Detect if user is pinch-to-zoom-ing on trackpad
   if (event.ctrlKey) {
@@ -164,4 +190,12 @@ $("#video-canvas").on("mousewheel", function(event) {
 
   event.preventDefault();
   event.stopPropagation();
+});
+
+$("#get-data").click(function() {
+  $.get("http://toyserver.rileyjshaw.com/scratchpad", function(data) {
+    initFromData(data);
+    Timer.reset();
+    resetDrawing();
+  });
 });

@@ -23,3 +23,9 @@
 .video-buttons {
     margin-top: 10px;
 }
+
+#play-pause-btn {
+    font-size: 20px;
+    margin-top: 10px;
+    display: inline-block;
+}

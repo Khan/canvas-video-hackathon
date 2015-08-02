@@ -29,5 +29,9 @@ window.Timer = {
 
   seekTo: function(timeMs) {
     this.totalMs = timeMs;
+  },
+
+  reset: function() {
+    this.totalMs = 0;
   }
 };
