@@ -1,0 +1,25 @@
+.progress-control {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    height: 25px;
+    position: relative;
+    width: 100%;
+    background: #CCC;
+    margin-top: -5px;
+}
+
+    .progress-control .elapsed-progress {
+        height: 100%;
+        width: 50%;
+        background: #CC181E;
+    }
+
+.video-player {
+    width: 1000px;
+    display: inline-block;
+}
+
+.video-buttons {
+    margin-top: 10px;
+}

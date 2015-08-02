@@ -25,5 +25,9 @@ window.Timer = {
     if (!this.interval) {
       this.start();
     }
+  },
+
+  seekTo: function(timeMs) {
+    this.totalMs = timeMs;
   }
 };

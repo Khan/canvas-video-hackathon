@@ -2,21 +2,27 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
+<body style="text-align: center;">
 
-<canvas id="video-canvas" width="1000" height="600" style="border: 1px solid #DDD; background: #111;">
-  No canvas support :(
-</canvas>
+<div class="video-player">
+  <canvas id="video-canvas" width="1000" height="600" style="background: #000;">
+    No canvas support :(
+  </canvas>
+  <div class="progress-control">
+    <div class="elapsed-progress">
+    </div>
+  </div>
+</div>
 
-<div style="float: left; padding-right: 20px;">
-  <button id="zoom-in-btn">+ zoom in</button> <br/>
-  <button id="zoom-out-btn">- zoom out</button> <br />
-  <div>Pinch to zoom (on trackpad)</div>
-  <div>Scroll to pan (on trackpad)</div>
-  <button id="play-btn">&#9654; play</button> <br />
-  <button id="pause-btn">&#9616;&#9616; pause</button> <br />
+<div class="video-buttons">
+  <button id="play-btn">&#9654; play</button>
+  <button id="pause-btn">&#9616;&#9616; pause</button>
+  <button id="zoom-in-btn">+ zoom in</button>
+  <button id="zoom-out-btn">- zoom out</button>
+  <span>Pinch to zoom / scroll to pan (on trackpad)</span>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>

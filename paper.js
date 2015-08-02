@@ -6,9 +6,23 @@ var path = new Path({
   strokeCap: 'round',
 });
 
+var dataPaths = [path];
 var pointIndex = 0;
 var firstPointTime = drawingData[0][2];
+var lastPointTime = drawingData[drawingData.length - 1][2];
+var totalTime = lastPointTime - firstPointTime;
 Timer.start();
+
+function resetDrawing() {
+  pointIndex = 0;
+  path = null;
+  _.each(dataPaths, function(p) {
+    p.remove();
+  });
+  dataPaths = [];
+
+  removeBrushes();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Main animation loop
@@ -25,7 +39,8 @@ function onFrame(event) {
     var y = datum[1];
 
     // Detect for pen lift (start new path if so)
-    if (x === 0 && y === 0) {
+    if ((x === 0 && y === 0) || !path) {
+      path && path.simplify(1.0);
       path = new Path({
         strokeColor: {
           hue: Math.random() * 360,
@@ -35,13 +50,13 @@ function onFrame(event) {
         strokeWidth: '3',
         strokeCap: 'round',
       });
+      dataPaths.push(path);
     } else {
       path.add(new Point(x, y - 200));
     }
   }
 
   path.smooth();
-  path.strokeColor.hue += 0.5;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,6 +65,7 @@ function onFrame(event) {
 tool.minDistance = 8;
 tool.maxDistance = 40;
 var brushPath;
+var brushPaths = [];
 
 function onMouseDown(event) {
   brushPath = new Path({
@@ -60,6 +76,7 @@ function onMouseDown(event) {
     }
   });
   brushPath.add(event.point);
+  brushPaths.push(brushPath);
 }
 
 function onMouseDrag(event) {
@@ -81,6 +98,41 @@ function onMouseUp(event) {
   brushPath.smooth();
 }
 
+function removeBrushes() {
+  brushPath = null;
+  _.each(brushPaths, function(p) {
+    p.remove();
+  });
+  brushPaths = [];
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Progress control
+
+var updateProgress = function() {
+  var nowSecs = Timer.getMs() / 1000;
+  var progress = Math.max(0, Math.min(1.0, nowSecs / totalTime));
+  var progressStyle = (progress * 100) + "%";
+
+  $(".elapsed-progress").css("width", progressStyle);
+};
+
+setInterval(updateProgress, 20);
+
+$(".progress-control").click(function(e) {
+  var $target = $(e.currentTarget);
+
+  var horizontalPadding = ($target.innerWidth() - $target.width()) / 2;
+  var relativePosition = (e.pageX - $target.offset().left -
+      horizontalPadding) / $target.width();
+
+  var clampedPosition = Math.min(Math.max(relativePosition, 0.0), 1.0);
+  var msToSeek = clampedPosition * totalTime * 1000;
+
+  Timer.seekTo(msToSeek);
+  resetDrawing();
+});
+
 ///////////////////////////////////////////////////////////////////////////////
 // Event handlers
 
@@ -94,6 +146,7 @@ $('#zoom-out-btn').on('click', function() {
 
 $('#play-btn').on('click', function() {
   Timer.resume();
+  removeBrushes();
 });
 
 $('#pause-btn').on('click', function() {
@@ -103,9 +156,8 @@ $('#pause-btn').on('click', function() {
 $("#video-canvas").on("mousewheel", function(event) {
   // Detect if user is pinch-to-zoom-ing on trackpad
   if (event.ctrlKey) {
-    view.zoom *= 1 + (event.deltaY * 0.003);
-    view.zoom = Math.max(0.1, view.zoom);
-    console.log(event.deltaX, event.deltaY, event.deltaFactor);
+    var zoom = view.zoom * (1 + (event.deltaY * 0.003));
+    view.zoom = Math.max(0.1, zoom);
   } else {
     view.scrollBy(new Point(event.deltaX, -event.deltaY) * 0.5);
   }
