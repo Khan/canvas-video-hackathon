@@ -193,7 +193,7 @@ $("#video-canvas").on("mousewheel", function(event) {
 });
 
 $("#get-data").click(function() {
-  $.get("http://toyserver.rileyjshaw.com/scratchpad", function(data) {
+  $.get("http://toyserver.rileyjshaw.com:8008", function(data) {
     initFromData(data);
     Timer.reset();
     resetDrawing();
